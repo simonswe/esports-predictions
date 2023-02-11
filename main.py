@@ -516,9 +516,29 @@ def get_results_iem1():
     resultObj['map1'] = results.find_all("div", {"class": "mapname"})[0].text.lstrip().rstrip()
     resultObj['map1-team1-score'] = results.find_all("div", {"class": "results-team-score"})[0].text.lstrip().rstrip()
     resultObj['map1-team2-score'] = results.find_all("div", {"class": "results-team-score"})[1].text.lstrip().rstrip()
-    '''
-    resultObj['map1-team1-ct-score'] = results.find_all("span", {"class": "results-center-half-score"})[0].text.lstrip().rstrip()
     
+    sideScore = results.find_all("div", {"class": "results-center-half-score"})[0]
+    side1Team = sideScore.find_all("span")[1]['class'][0]
+    resultObj['map1-team1-'+ side1Team+'-side'] = sideScore.find_all("span")[1].text.lstrip().rstrip()
+    
+    side1Team = sideScore.find_all("span")[3]['class'][0]
+    resultObj['map1-team2-'+ side1Team+'-side'] = sideScore.find_all("span")[3].text.lstrip().rstrip()
+    
+    side1Team = sideScore.find_all("span")[5]['class'][0]
+    resultObj['map1-team1-'+ side1Team+'-side'] = sideScore.find_all("span")[5].text.lstrip().rstrip()
+    
+    side1Team = sideScore.find_all("span")[7]['class'][0]
+    resultObj['map1-team2-'+ side1Team+'-side'] = sideScore.find_all("span")[7].text.lstrip().rstrip()
+    
+    if (sideScore.find_all("span")[11]):
+        resultObj['map1-team1-ot'] = sideScore.find_all("span")[11].text.lstrip().rstrip()
+        resultObj['map1-team2-ot'] = sideScore.find_all("span")[13].text.lstrip().rstrip()
+    else: 
+        resultObj['map1-team1-ot'] = None
+        resultObj['map1-team2-ot'] = None
+    
+        
+    '''
     resultObj['map1-team1-t-score'] = results.find_all("span", {"class": "results-center-half-score"})[0].text.lstrip().rstrip()
     resultObj['map1-team2-ct-score'] = results.find_all("span", {"class": "results-center-half-score"})[1].text.lstrip().rstrip()
     resultObj['map1-team2-t-score'] = results.find_all("span", {"class": "results-center-half-score"})[1].text.lstrip().rstrip()
