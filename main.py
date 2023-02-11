@@ -516,9 +516,13 @@ def get_results_iem1():
     resultObj['map1'] = results.find_all("div", {"class": "mapname"})[0].text.lstrip().rstrip()
     resultObj['map1-team1-score'] = results.find_all("div", {"class": "results-team-score"})[0].text.lstrip().rstrip()
     resultObj['map1-team2-score'] = results.find_all("div", {"class": "results-team-score"})[1].text.lstrip().rstrip()
+<<<<<<< HEAD
     #resultObj['map1-team1-ct-score'] = results.find_all("span", {"class": "results-center-half-score"})[0].text.lstrip().rstrip()
-    
+=======
     '''
+    resultObj['map1-team1-ct-score'] = results.find_all("span", {"class": "results-center-half-score"})[0].text.lstrip().rstrip()
+>>>>>>> 2034278b063f39e2518dc07739978f81d37169e2
+    
     resultObj['map1-team1-t-score'] = results.find_all("span", {"class": "results-center-half-score"})[0].text.lstrip().rstrip()
     resultObj['map1-team2-ct-score'] = results.find_all("span", {"class": "results-center-half-score"})[1].text.lstrip().rstrip()
     resultObj['map1-team2-t-score'] = results.find_all("span", {"class": "results-center-half-score"})[1].text.lstrip().rstrip()
@@ -531,7 +535,7 @@ def get_results_iem1():
     # check ot score team 2
     if int(resultObj['map1-team1-score']) + int(resultObj['map1-team2-score']) > 30:
         resultObj['map1-team2-ot-score'] = str(int(resultObj['map1-team2-score']) - int(resultObj['map1-team2-ct-score']) - int(resultObj['map1-team1-t-score']))
-    else: resultObj['map1-team2-ot-score'] = None
+    else: resultObj['map1-team2-ot-score'] = Noneasdasdasdads
     '''
         
         
