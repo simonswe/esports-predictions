@@ -150,6 +150,7 @@ def get_results_iem1():
 
         # find ct and t scores
         sideScore = x.find("div", {"class": "results-center-half-score"})
+
         mapSpan = len(sideScore.find_all("span"))
         side1Team = sideScore.find_all("span")[1]['class'][0]
         resultObj['map'+str(map) + '-team1-' + side1Team + '-side'] = \
@@ -163,7 +164,8 @@ def get_results_iem1():
         side1Team = sideScore.find_all("span")[7]['class'][0]
         resultObj['map'+str(map) + '-team2-' + side1Team + '-side'] = \
             sideScore.find_all("span")[7].text.lstrip().rstrip()
-        resultObj['got here' + str(map)] = 'yes'
+
+        # check ot
         if mapSpan > 10:
             resultObj['map'+str(map)+'-team1-ot'] = sideScore.find_all("span")[11].text.lstrip().rstrip()
             resultObj['map'+str(map)+'-team2-ot'] = sideScore.find_all("span")[13].text.lstrip().rstrip()
