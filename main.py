@@ -551,7 +551,7 @@ def get_results_iem1():
     # check ot score team 2
     if int(resultObj['map1-team1-score']) + int(resultObj['map1-team2-score']) > 30:
         resultObj['map1-team2-ot-score'] = str(int(resultObj['map1-team2-score']) - int(resultObj['map1-team2-ct-score']) - int(resultObj['map1-team1-t-score']))
-    else: resultObj['map1-team2-ot-score'] = Noneasdasdasdads
+    else: resultObj['map1-team2-ot-score'] = None
     '''
         
         
