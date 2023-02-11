@@ -1,4 +1,4 @@
-from tzlocal import *
+import tzlocal
 import re
 import requests
 import datetime
@@ -6,10 +6,10 @@ from bs4 import BeautifulSoup
 from python_utils import converters
 import time
 import zoneinfo
-import tzlocal
 
-HLTV_COOKIE_TIMEZONE = "Europe/Copenhagen"
+HLTV_COOKIE_TIMEZONE = "America/New_York"
 HLTV_ZONEINFO=zoneinfo.ZoneInfo(HLTV_COOKIE_TIMEZONE)
+
 LOCAL_TIMEZONE_NAME = tzlocal.get_localzone_name()
 LOCAL_ZONEINFO = zoneinfo.ZoneInfo(LOCAL_TIMEZONE_NAME)
 
@@ -516,6 +516,15 @@ def get_results_iem1():
     resultObj['map1'] = results.find_all("div", {"class": "mapname"})[0].text.lstrip().rstrip()
     resultObj['map1-team1-score'] = results.find_all("div", {"class": "results-team-score"})[0].text.lstrip().rstrip()
     resultObj['map1-team2-score'] = results.find_all("div", {"class": "results-team-score"})[1].text.lstrip().rstrip()
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+    #resultObj['map1-team1-ct-score'] = results.find_all("span", {"class": "results-center-half-score"})[0].text.lstrip().rstrip()
+=======
+    '''
+    resultObj['map1-team1-ct-score'] = results.find_all("span", {"class": "results-center-half-score"})[0].text.lstrip().rstrip()
+>>>>>>> 2034278b063f39e2518dc07739978f81d37169e2
+>>>>>>> 7ec20dc95d68770a040547df7c0f388d00d268fd
     
     sideScore = results.find_all("div", {"class": "results-center-half-score"})[0]
     side1Team = sideScore.find_all("span")[1]['class'][0]
