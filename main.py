@@ -3,7 +3,7 @@ import re
 import requests
 import datetime
 from bs4 import BeautifulSoup
-from python_utils import converters
+import converters
 import time
 import zoneinfo
 
