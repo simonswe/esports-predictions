@@ -128,7 +128,24 @@ def get_results_iem():
 
 
 def get_results_iem1():
-    results = get_parsed_page("https://www.hltv.org/matches/2361341/liquid-vs-vitality-iem-katowice-2023")
+    results = get_parsed_page("https://www.hltv.org/results?event=6809")
+
+    results_list = []
+
+    pastresults = results.find_all("div", {"class": "results-holder"})
+
+    for result in pastresults:
+        resultDiv = result.find_all("div", {"class": "result-con"})
+
+        for res in resultDiv:
+            url = "https://hltv.org" + res.find("a", {"class": "a-reset"}).get("href")
+            results_list.append(get_results_matchURL(url))
+
+    return results_list
+
+
+def get_results_matchURL(url):
+    results = get_parsed_page(url)
 
     resultObj = {}
 
@@ -139,41 +156,42 @@ def get_results_iem1():
     resultObj['team2'] = results.find_all("div", {"class": "teamName"})[1].text.lstrip().rstrip()
     resultObj['team2-score'] = results.find_all("div", {"class": "lost"})[0].text.lstrip().rstrip()
 
-    map = 0
+    mapCount = 0
     for x in results.find_all("div", {"class": "mapholder"}):
-        map += 1
-        resultObj['map'+ str(map)] = x.find("div", {"class": "mapname"}).text.lstrip().rstrip()
-        resultObj['map' + str(map) + '-team1-score'] = \
+        mapCount += 1
+        resultObj['map' + str(mapCount)] = x.find("div", {"class": "mapname"}).text.lstrip().rstrip()
+        resultObj['map' + str(mapCount) + '-team1-score'] = \
             x.find_all("div", {"class": "results-team-score"})[0].text.lstrip().rstrip()
-        resultObj['map' + str(map) + '-team2-score'] = \
+        resultObj['map' + str(mapCount) + '-team2-score'] = \
             x.find_all("div", {"class": "results-team-score"})[1].text.lstrip().rstrip()
 
         # find ct and t scores
-        sideScore = x.find("div", {"class": "results-center-half-score"})
-
-        mapSpan = len(sideScore.find_all("span"))
-        side1Team = sideScore.find_all("span")[1]['class'][0]
-        resultObj['map'+str(map) + '-team1-' + side1Team + '-side'] = \
-            sideScore.find_all("span")[1].text.lstrip().rstrip()
-        side1Team = sideScore.find_all("span")[3]['class'][0]
-        resultObj['map'+str(map) + '-team2-' + side1Team + '-side'] = \
-            sideScore.find_all("span")[3].text.lstrip().rstrip()
-        side1Team = sideScore.find_all("span")[5]['class'][0]
-        resultObj['map'+str(map) + '-team1-' + side1Team + '-side'] = \
-            sideScore.find_all("span")[5].text.lstrip().rstrip()
-        side1Team = sideScore.find_all("span")[7]['class'][0]
-        resultObj['map'+str(map) + '-team2-' + side1Team + '-side'] = \
-            sideScore.find_all("span")[7].text.lstrip().rstrip()
-
-        # check ot
-        if mapSpan > 10:
-            resultObj['map'+str(map)+'-team1-ot'] = sideScore.find_all("span")[11].text.lstrip().rstrip()
-            resultObj['map'+str(map)+'-team2-ot'] = sideScore.find_all("span")[13].text.lstrip().rstrip()
-        else:
-            resultObj['map'+str(map)+'-team1-ot']= None
-            resultObj['map'+str(map)+'-team2-ot'] = None
+        # sideScore = x.find("div", {"class": "results-center-half-score"})
+        #
+        # mapSpanCount = len(sideScore.find_all("span"))
+        # side1Team = sideScore.find_all("span")[1]['class'][0]
+        # resultObj['map' + str(mapCount) + '-team1-' + side1Team + '-side'] = \
+        #     sideScore.find_all("span")[1].text.lstrip().rstrip()
+        # side1Team = sideScore.find_all("span")[3]['class'][0]
+        # resultObj['map' + str(mapCount) + '-team2-' + side1Team + '-side'] = \
+        #     sideScore.find_all("span")[3].text.lstrip().rstrip()
+        # side1Team = sideScore.find_all("span")[5]['class'][0]
+        # resultObj['map' + str(mapCount) + '-team1-' + side1Team + '-side'] = \
+        #     sideScore.find_all("span")[5].text.lstrip().rstrip()
+        # side1Team = sideScore.find_all("span")[7]['class'][0]
+        # resultObj['map' + str(mapCount) + '-team2-' + side1Team + '-side'] = \
+        #     sideScore.find_all("span")[7].text.lstrip().rstrip()
+        #
+        # # check ot
+        #
+        # if mapSpanCount > 10:
+        #     resultObj['map' + str(mapCount) + '-team1-ot'] = sideScore.find_all("span")[11].text.lstrip().rstrip()
+        #     resultObj['map' + str(mapCount) + '-team2-ot'] = sideScore.find_all("span")[13].text.lstrip().rstrip()
+        # else:
+        #     resultObj['map' + str(mapCount) + '-team1-ot'] = None
+        #     resultObj['map' + str(mapCount) + '-team2-ot'] = None
 
     return resultObj
 
-
 pprint(get_results_iem1())
+#pprint(get_results_matchURL("https://www.hltv.org/matches/2361341/liquid-vs-vitality-iem-katowice-2023"))
