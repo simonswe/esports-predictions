@@ -1,11 +1,12 @@
+from pprint import pprint
+from bs4 import BeautifulSoup
+
 import tzlocal
 import requests
 import datetime
-from bs4 import BeautifulSoup
 import converters
 import time
 import zoneinfo
-from pprint import pprint
 
 HLTV_COOKIE_TIMEZONE = "America/New_York"
 HLTV_ZONEINFO = zoneinfo.ZoneInfo(HLTV_COOKIE_TIMEZONE)
@@ -16,31 +17,31 @@ LOCAL_ZONEINFO = zoneinfo.ZoneInfo(LOCAL_TIMEZONE_NAME)
 TEAM_MAP_FOR_RESULTS = []
 
 
-def _get_all_teams():
+def get_all_teams():
     if not TEAM_MAP_FOR_RESULTS:
-        teams = get_parsed_page("https://www.hltv.org/stats/teams?minMapCount=0")
+        teams = getParsedPage("https://www.hltv.org/stats/teams?minMapCount=0")
         for team in teams.find_all("td", {"class": ["teamCol-teams-overview"], }):
             team = {'id': converters.to_int(team.find("a")["href"].split("/")[-2]), 'name': team.find("a").text,
                     'url': "https://hltv.org" + team.find("a")["href"]}
             TEAM_MAP_FOR_RESULTS.append(team)
 
 
-def _findTeamId(teamName: str):
-    _get_all_teams()
+def findTeamId(teamName: str):
+    get_all_teams()
     for team in TEAM_MAP_FOR_RESULTS:
         if team['name'] == teamName:
             return team['id']
     return None
 
 
-def _padIfNeeded(numberStr: str):
+def padIfNeeded(numberStr: str):
     if int(numberStr) < 10:
         return str(numberStr).zfill(2)
     else:
         return str(numberStr)
 
 
-def _monthNameToNumber(monthName: str):
+def monthNameToNumber(monthName: str):
     # Check for the input "Augu" and convert it to "August"
     # This is necessary because the input string may have been sanitized
     # by removing the "st" from the day numbers, such as "21st" -> "21"
@@ -49,7 +50,7 @@ def _monthNameToNumber(monthName: str):
     return datetime.datetime.strptime(monthName, '%B').month
 
 
-def get_parsed_page(url, delay=0.5):
+def getParsedPage(url, delay=0.5):
     headers = {
         "referer": "https://www.hltv.org/stats",
     }
@@ -63,14 +64,14 @@ def get_parsed_page(url, delay=0.5):
     return BeautifulSoup(requests.get(url, headers=headers, cookies=cookies).text, "lxml")
 
 
-def get_results_iem():
-    results = get_parsed_page("https://www.hltv.org/results?event=6809")
+def getResultsIem():
+    results = getParsedPage("https://www.hltv.org/results?event=6809")
 
     results_list = []
 
-    pastresults = results.find_all("div", {"class": "results-holder"})
+    pastResults = results.find_all("div", {"class": "results-holder"})
 
-    for result in pastresults:
+    for result in pastResults:
         resultDiv = result.find_all("div", {"class": "result-con"})
 
         for res in resultDiv:
@@ -85,8 +86,8 @@ def get_results_iem():
 
                 dateArr = dateText.split()
 
-                dateTextFromArrPadded = _padIfNeeded(dateArr[2]) + "-" + _padIfNeeded(
-                    _monthNameToNumber(dateArr[0])) + "-" + _padIfNeeded(dateArr[1])
+                dateTextFromArrPadded = padIfNeeded(dateArr[2]) + "-" + padIfNeeded(
+                    monthNameToNumber(dateArr[0])) + "-" + padIfNeeded(dateArr[1])
                 dateFromHLTV = datetime.datetime.strptime(dateTextFromArrPadded, '%Y-%m-%d').replace(
                     tzinfo=HLTV_ZONEINFO)
                 dateFromHLTV = dateFromHLTV.astimezone(LOCAL_ZONEINFO)
@@ -107,10 +108,10 @@ def get_results_iem():
                 resultObj['team1'] = res.find_all("td", {"class": "team-cell"})[0].text.lstrip().rstrip()
                 resultObj['team1score'] = converters.to_int(
                     res.find("td", {"class": "result-score"}).find_all("span")[0].text.lstrip().rstrip())
-                resultObj['team1-id'] = _findTeamId(
+                resultObj['team1-id'] = findTeamId(
                     res.find_all("td", {"class": "team-cell"})[0].text.lstrip().rstrip())
                 resultObj['team2'] = res.find_all("td", {"class": "team-cell"})[1].text.lstrip().rstrip()
-                resultObj['team2-id'] = _findTeamId(
+                resultObj['team2-id'] = findTeamId(
                     res.find_all("td", {"class": "team-cell"})[1].text.lstrip().rstrip())
                 resultObj['team2score'] = converters.to_int(
                     res.find("td", {"class": "result-score"}).find_all("span")[1].text.lstrip().rstrip())
@@ -127,25 +128,8 @@ def get_results_iem():
     return results_list
 
 
-def get_results_iem1():
-    results = get_parsed_page("https://www.hltv.org/results?event=6809")
-
-    results_list = []
-
-    pastresults = results.find_all("div", {"class": "results-holder"})
-
-    for result in pastresults:
-        resultDiv = result.find_all("div", {"class": "result-con"})
-
-        for res in resultDiv:
-            url = "https://hltv.org" + res.find("a", {"class": "a-reset"}).get("href")
-            results_list.append(get_results_matchURL(url))
-
-    return results_list
-
-
-def get_results_matchURL(url):
-    results = get_parsed_page(url)
+def getResultsMatchURL(url):
+    results = getParsedPage(url)
 
     resultObj = {}
 
@@ -193,5 +177,22 @@ def get_results_matchURL(url):
 
     return resultObj
 
-pprint(get_results_iem1())
-#pprint(get_results_matchURL("https://www.hltv.org/matches/2361341/liquid-vs-vitality-iem-katowice-2023"))
+
+def getResultsIem1():
+    results = getParsedPage("https://www.hltv.org/results?event=6809")
+
+    results_list = []
+
+    pastresults = results.find_all("div", {"class": "results-holder"})
+
+    for result in pastresults:
+        resultDiv = result.find_all("div", {"class": "result-con"})
+
+        for res in resultDiv:
+            url = "https://hltv.org" + res.find("a", {"class": "a-reset"}).get("href")
+            results_list.append(getResultsMatchURL(url))
+
+    return results_list
+
+# pprint(getResultsIem1())
+pprint(getResultsMatchURL("https://www.hltv.org/matches/2361341/liquid-vs-vitality-iem-katowice-2023"))
