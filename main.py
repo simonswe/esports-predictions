@@ -144,7 +144,6 @@ def getResultsMatchURL(url):
     for x in results.find_all("div", {"class": "mapholder"}):
         mapCount += 1
         if x.find("div", {"class": "optional"}):
-            print("optional")
             resultObj['map' + str(mapCount)] = None
             resultObj['map' + str(mapCount) + '-team1-score'] = None
             resultObj['map' + str(mapCount) + '-team2-score'] = None
@@ -153,7 +152,6 @@ def getResultsMatchURL(url):
             resultObj['map' + str(mapCount) + '-team1-' + side1Team + '-side'] = None
             resultObj['map' + str(mapCount) + '-team2-' + side1Team + '-side'] = None
         else:
-            print("played  map")
             resultObj['map' + str(mapCount)] = x.find("div", {"class": "mapname"}).text.lstrip().rstrip()
             resultObj['map' + str(mapCount) + '-team1-score'] = \
                 x.find_all("div", {"class": "results-team-score"})[0].text.lstrip().rstrip()
